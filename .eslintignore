@@ -1,0 +1,6 @@
+test/fixtures
+coverage
+public
+dist
+test/web
+node_modules
