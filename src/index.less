@@ -1,3 +1,154 @@
-p{
-    color: red
+/*
+ * Dialog对话框样式表
+<div class="m-dialog">
+	<div class="m-dialog-content">
+    <div class="m-dialog-title">
+      <div>title</div>
+      <a class="m-dialog-close" href="#"><em></em></a>
+    </div>
+    <div class="m-dialog-body">
+      <div class="m-dialog-main">内容模块</div>
+    </div>
+		<div class="m-dialog-footer">
+      <a class='m-dialog-btn'><span>确定</span></a>
+      <a class='m-dialog-btn'><span>取消</span></a>
+		</div>
+	</div>
+</div>
+<div class='m-dialog-layout iOpacityZero'></div>
+ */
+
+
+
+// wap 弹窗默认样式
+.m-dialog {
+  font-size: 12px;
+  position: fixed;
+  text-align: left;
+  border-radius: 3px;
+  overflow: hidden;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  color: #030303;
+  background-color: #fdfdfd;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+  .m-dialog-header {
+    padding: 8px 10px;
+    display: flex;
+    justify-content: space-between; 
+    div {
+      flex: 1;
+      display:block;
+			text-align:left;
+			font-weight:700;
+			margin:0;
+			font-size: 14px;
+			color:#2b2b2b;
+    }
+    //  默认隐藏关闭按钮
+    .m-dialog-close {
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      em {
+        display: block;
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        color: #333333;
+        cursor: default;
+        &:active {
+          transform: scale(.9, .9);
+        }
+      }
+    }
+  }
+
+  .m-dialog-body {
+    min-height: 25px;
+    padding: 0;
+    margin: 0;
+    background-color: #fdfdfd;
+    .m-dialog-main {
+      background-color: #fdfdfd;
+      overflow: auto;
+      word-wrap: break-word;
+      word-break: break-all;
+      padding: 0 24px 10px;
+      line-height: 1.5;
+    }
+  }
+
+  .m-dialog-footer {
+    text-align: center;
+		padding: 8px 5px;
+		text-align: center;
+		.m-dialog-btn {
+			white-space: nowrap;
+			word-break: keep-all;
+			word-wrap: normal;
+			display: inline-block;
+			margin: 0 5px;
+			width: 100px;
+			text-align: center;
+			text-decoration: none!important;
+			color: #fff;
+			vertical-align: middle;
+			cursor: default;
+			font: 400 16px/1.93 "Microsoft YaHei",arial,simsun,SimHei;
+			border-radius: 3px;
+			border: 1px solid #d91d37;
+			background-color: #d91d37;
+		}
+  }
+
+
+  // 动画控制
+  /*
+* CSS3 动画样式
+* 动画过程曲线 http://www.w3school.com.cn/cssref/pr_transition-timing-function.asp
+*/
+  &.m-ani-show {
+    // transition: all .3s linear;
+    transition: width, height, transform 3s, 2s liner 3s, 2s;
+  }
+
+  &.m-ani-hide {
+    transition: all .3s linear;
+  }
+
+  &.m-dialog-ani-1 {
+    opacity: .1;
+  }
+
+  &.m-dialog-ani-2 {
+    opacity: .1;
+    transform: scale(0.1);
+  }
+
+  &.m-dialog-ani-3 {
+    opacity: .1;
+    transform: scale(1.8);
+  }
+
+  &.m-dialog-ani-4 {
+    opacity: .0;
+    transform: perspective(300px) rotateY(90deg);
+  }
+
+  &.m-dialog-ani-5 {
+    opacity: .1;
+    transform: scale(.3);
+  }
+
+  &.m-dialog-ani-6 {
+    opacity: .1;
+    transform: matrix(1, 0, 0, 1, 0, 230);
+  }
+
+  &.m-dialog-ani-7 {
+    opacity: .1;
+    transform: matrix(1, 0, 0, 1, 0, -230);
+  }
 }

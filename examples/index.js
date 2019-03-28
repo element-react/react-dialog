@@ -1,20 +1,26 @@
-console.log(123);
-// import '@babel/polyfill';
-// import React from 'react';
-
-var a = new Set();
-a.size();
-
-// function * test () {
-//   console.log('1');
-// }
-// var a = test();
-
-async function b () {
-
+import React from 'react';
+import ReactDom from 'react-dom';
+import Dialog, { dialog } from '../src/index';
+class Demo extends React.PureComponent {
+  constructor(props) {
+    super(props);
+  }
+  render () {
+    return <div className="demo">
+      demo
+    </div>;
+  }
 }
 
-var c = b();
-console.log(c);
+const res = dialog({
+  title: 'test',
+  button: ['ok', 'cancle'],
+  css: {
+    a: true
+  }
+});
+window.res = res;
+// res.title = '111';
+console.log(res);
 
-Object.assign({}, c);
+ReactDom.render(<Demo/>, document.querySelector('#app'));

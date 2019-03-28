@@ -7,6 +7,7 @@ const commonjs = require('rollup-plugin-commonjs');
 const postcss = require('rollup-plugin-postcss');
 const path = require('path');
 const serve = require('rollup-plugin-serve');
+const globals = require('rollup-plugin-node-globals');
 // PostCSS plugins
 const cssnext = require('postcss-cssnext');
 const cssnano = require('cssnano');
@@ -20,7 +21,7 @@ const getCssPlugin = function () {
       cssnext({ warnForDuplicates: false }),
       cssnano()
     ],
-    extract: `${distBasePath}/demo.css`,
+    extract: `${distBasePath}/examples/demo.css`,
     extensions: ['.css', '.less']
   });
 };
@@ -34,8 +35,6 @@ function genConfig () {
       file: `${basePath}/dist/examples/index.js`
     },
     plugins: [
-      resolve({ jsnext: true, main: true, browser: true }),
-      commonjs(),
       babel({
         babelrc: false,
         runtimeHelpers: true,
@@ -63,17 +62,24 @@ function genConfig () {
           }]
         ]
       }),
+      commonjs({
+      }),
+      globals(),
+      resolve({ jsnext: true, main: true, browser: true }),
       serve({
         contentBase: ['dist'],
         port: 9002,
-        open: true,
+        open: false,
         openPage: '/examples/index.html'
       }),
       html({
         template: 'view/template.html',
         dest: 'dist/examples',
         filename: 'index.html',
-        inject: 'head'
+        inject: 'body',
+        externals: [
+          
+        ]
       }),
       getCssPlugin()
     ]

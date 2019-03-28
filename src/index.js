@@ -1,4 +1,6 @@
 import './index.less';
-import dialog from './dialog';
+import DialogManager from './dialogManager';
+export { default } from './dialog';
 
-export default dialog;
+// 创建并返回dialog接口
+export const dialog = DialogManager.create();
