@@ -15,9 +15,7 @@ class Demo extends React.PureComponent {
 const res = dialog({
   title: 'test',
   button: ['ok', 'cancle'],
-  css: {
-    a: true
-  }
+  position: 'c'
 });
 window.res = res;
 // res.title = '111';

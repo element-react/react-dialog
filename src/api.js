@@ -1,5 +1,4 @@
 export default function (manager, key) {
-  const props = manager.getDialogProps(key);
   const res = {
     manager,
     // dom已删除
@@ -32,16 +31,22 @@ export default function (manager, key) {
       return key;
     }
   };
-  ['width', 'height', 'position', 'hidden', 'button', 'title', 'content', 'prefixCls', 'className', 'css'].forEach(one => {
+  // 不提供zIndex的修改方法
+  ['width', 'height', 'position',
+    'hidden', 'button', 'title',
+    'content', 'prefixCls', 'className',
+    'css', 'timeout'].forEach(one => {
     Object.defineProperty(res, one, {
       enumerable: true,
       set (val) {
+        const props = manager.getDialogProps(key);
         manager.modifyCache({
           ...props,
           [one]: val
         });
       },
       get () {
+        const props = manager.getDialogProps(key);
         return props[one];
       }
     });
