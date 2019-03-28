@@ -11,3 +11,7 @@ const OBJECT_STRING = '[object Object]';
 export function isPlainObject (obj) {
   return toString.call(obj) === OBJECT_STRING;
 };
+
+export const isNumber = /^\d+$/;
+
+export const noop = () => {};

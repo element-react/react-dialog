@@ -1,6 +1,12 @@
 export default function (manager, key) {
   const res = {
     manager,
+    close () {
+      manager.removeCache(key);
+    },
+    closeAll () {
+      manager.removeAll();
+    },
     // dom已删除
     onClose () {
 

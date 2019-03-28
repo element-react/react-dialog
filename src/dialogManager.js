@@ -20,7 +20,7 @@ export class DialogManager extends React.Component{
   // 修改dialog缓存的
   modifyCache (props) {
     const id = Dialog.genId();
-    const key = props.key || id;
+    const key = String(props.key || id);
     const zIndex = Dialog.genZIndex();
     props = {
       key,
@@ -43,23 +43,28 @@ export class DialogManager extends React.Component{
   }
   removeCache (key) {
     key = key.replace(dialogIdReg, '$1');
-    const index = cache.findIndex(cur => cur.key === key);
-    if (index) {
+    const index = this.state.cache.findIndex(cur => cur.key === key);
+    if (index > -1) {
       this.setState(({ cache }) => {
         cache = cache.slice(0);
-        cache.splice(1, index);
+        cache.splice(index, 1);
+        console.log(cache);
         return {
           cache
         };
       });
     }
   }
-  
+  removeAll () {
+    this.setState({
+      cache: []
+    });
+  }
   renderDialog () {
     return this.state.cache.map(dialogProps => <Dialog {...dialogProps}/>);
   }
   render () {
-    return <div className="m-dialog-wrap">
+    return <div className="m-dialog-wrap" id={`dialog${this.props.key}`}>
       {this.renderDialog()}
     </div>;
   }
@@ -102,15 +107,24 @@ DialogManager.create = function (cfg = {}) {
         rc.removeCache(opt);
         return opt;
       }
-      key = rc.mofifyCache({
+      opt = {
         content: opt
-      });
-    } else if (opt.content || opt.title) {
+      };
+    }
+    if (opt.content || opt.title) {
       // 内容必须是存在的
       key = rc.modifyCache(opt);
     }
     if (key) {
-      return api(rc, key); 
+      const res = api(rc, key);
+      Object.defineProperties(res, {
+        __closeList: {
+          writable: true,
+          enumerable: false,
+          value: []
+        }
+      });
+      return res; 
     }
   };
 };

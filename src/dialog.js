@@ -2,28 +2,36 @@ import React from 'react';
 import globalConfig from './globalConfig';
 import PropTypes from 'prop-types';
 import './index.less';
-import { closeSvg, isPlainObject } from './utils';
+import { closeSvg, isPlainObject, isNumber, noop } from './utils';
 import classnames from 'classnames';
 export default class Dialog extends React.PureComponent {
   constructor (props) {
     super(props);
     this.dialogRef = null;
+    this.dialogMainRef = null;
   }
   static propTypes = {
+    // 超时自动关闭
     timeout: PropTypes.number,
+    // 标题，可以是一个element或者string
     title: PropTypes.oneOfType([
       PropTypes.element,
       PropTypes.string,
       PropTypes.arrayOf(PropTypes.element)
     ]),
+    // 内容可以是一个element或者string
     content: PropTypes.oneOfType([
       PropTypes.element,
       PropTypes.string,
       PropTypes.array
     ]),
+    //  当前是显示还是隐藏
     hidden: PropTypes.bool,
+    // 按钮如['ok', 'cancle'] 或者标签中代理data-action的会被自动代理成onBtnClick时间
     button: PropTypes.arrayOf(PropTypes.string),
+    // classname的前缀
     prefixCls: PropTypes.string,
+    // zIndex值
     zIndex: PropTypes.number,
     // 遵循classnames方法的定义
     css: PropTypes.any,
@@ -50,31 +58,69 @@ export default class Dialog extends React.PureComponent {
         );
       }
     },
+    // 宽度，未设置则是auto
     width: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
-    ])
+    ]),
+    // 高度，未设置则是auto
+    height: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
+    // 关闭方法
+    close: PropTypes.func.isRequired,
+    // 弹窗关闭后
+    onClose: PropTypes.func,
+    // 弹窗关闭前
+    onBeforeClosed: PropTypes.func,
+    // 按钮点击事件，每个按钮会有固定的id做区分
+    onBtnClick: PropTypes.func,
+    // 弹窗隐藏事件
+    onHide: PropTypes.func,
+    // 弹窗显示事件
+    onShow: PropTypes.func
   }
   static defaultProps = {
     timeout: 0,
     button: ['ok'],
     hidden: false,
     prefixCls: 'm-dialog',
-    position: 'c'
+    position: 'c',
+    onClose: noop,
+    onBeforeClosed: noop,
+    onBtnClick: noop,
+    onHide: noop,
+    onShow: noop
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.width !== this.props.width ||
+      prevProps.height !== this.props.height ||
+      prevProps.position !== this.props.position ) {
+      this.setMainStyles();
+      this.setPos();
+    }
   }
 
   componentDidMount () {
     this.startTimer();
     // 组件挂载后调用直接重新计算位置 -- 因为首次获取styles的时候组件并没有挂载，所以必须要在组件挂载后强制更新一次
-    this.forceUpdate();
+    this.setMainStyles();
+    this.setPos();
   }
-
   componentWillUnmount () {
     this.endTimer();
+    // 下一个时间片段
+    setTimeout(() => {
+      this.props.onClose();
+    });
   }
   startTimer () {
     if (this.props.timeout) {
-      this._timer = setTimeout(() => {}, this.props.timeout);
+      this._timer = setTimeout(() => {
+        this.props.close();
+      }, this.props.timeout);
     }
   }
   endTimer () {
@@ -83,7 +129,7 @@ export default class Dialog extends React.PureComponent {
       this._timer = null;
     }
   }
-  callPos () {
+  setPos () {
     // 根据宽高计算对话框坐标
     const	posReg = {
       l: /l/i,
@@ -115,6 +161,7 @@ export default class Dialog extends React.PureComponent {
           ...position
         };
       }
+      Object.assign(dialogDom.style, position);
       return position;
     }
     let rect = dialogDom.getBoundingClientRect();
@@ -238,9 +285,36 @@ export default class Dialog extends React.PureComponent {
       ...blank,
       ...position
     };
+    Object.assign(dialogDom.style, position);
     return position;
   }
-  get styles () {
+  setMainStyles () {
+    const res = {
+      width: this.convertSize(this.props.width),
+      height: this.convertSize(this.props.height)
+    };
+    if (this.dialogMainRef) {
+      this.dialogMainRef.style.width = res.width;
+      this.dialogMainRef.style.height = res.height;
+    }
+  }
+  convertSize (size) {
+    let res;
+    // 整数的情况下认为是px为单位，如果是个字符串就认为是别的单位
+    if (isNumber.test(size)) {
+      let w = parseInt(size, 10);
+      if (w === 0) {
+        res = 'auto';
+      } else if (w > 0) {
+        res = w + 'px';
+      }
+    } else {
+      res = this.height;
+    }
+    return res;
+  }
+  // 获取dialog的样式
+  get dialogstyles () {
     let styles = {};
     if (this.props.hidden) {
       styles = {
@@ -250,10 +324,8 @@ export default class Dialog extends React.PureComponent {
         visibility: 'hidden'
       };
     }
-    const pos = this.callPos();
     styles = {
       ...styles,
-      ...pos,
       zIndex: this.props.zIndex
     };
     return styles;
@@ -284,14 +356,14 @@ export default class Dialog extends React.PureComponent {
     const content = this.props.content;
     const prefixCls = this.props.prefixCls;
     if (content) {
-      return <div className={`${prefixCls}-body`}>
-        <div className={`${prefixCls}-main`}>{content}</div>
+      return <div className={`${prefixCls}-body`} ref={ele => this.dialogMainRef = ele}>
+        <div className={`${prefixCls}-main`}>{content}{this.props.children}</div>
       </div>;
     }
   }
   render() {
     const className = classnames(this.props.className, this.props.css, this.props.prefixCls);
-    return <div className={className} style={this.styles} ref={ele => this.dialogRef = ele}>
+    return <div className={className} style={this.dialogstyles} ref={ele => this.dialogRef = ele}>
       {this.renderHeader()}
       {this.renderContent()}
       {this.renderFooter()}
