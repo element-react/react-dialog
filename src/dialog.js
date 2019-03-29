@@ -5,11 +5,18 @@ import Overlay from './overlay';
 import './index.less';
 import { closeSvg, isPlainObject, isNumber, noop, closest } from './utils';
 import classnames from 'classnames';
+
+// 是个缓存，缓存所有dialog的instance
+export const dialogInstanceCache = [];
 export default class Dialog extends React.PureComponent {
   constructor (props) {
     super(props);
     this.dialogRef = null;
     this.dialogMainRef = null;
+    dialogInstanceCache.push(this);
+    this.state = {
+      zeroOpacity: false
+    };
   }
   static propTypes = {
     // 超时自动关闭
@@ -96,7 +103,6 @@ export default class Dialog extends React.PureComponent {
     onHide: noop,
     onShow: noop
   }
-
   componentDidUpdate(prevProps) {
     if (prevProps.width !== this.props.width ||
       prevProps.height !== this.props.height ||
@@ -113,9 +119,14 @@ export default class Dialog extends React.PureComponent {
         this.props.onShow();
       }
     }
+    // 模态属性改变，或者显示隐藏改变则需要修改zeroOpacity
+    if (prevProps.hidden !== this.props.hidden || prevProps.modal !== this.props.modal) {
+      this.initZeroOpacity();
+    }
   }
   componentDidMount () {
     this.startTimer();
+    this.initZeroOpacity();
     // 组件挂载后调用直接重新计算位置 -- 因为首次获取styles的时候组件并没有挂载，所以必须要在组件挂载后强制更新一次
     this.setMainStyles();
     this.setPos();
@@ -133,6 +144,11 @@ export default class Dialog extends React.PureComponent {
     // 下一个时间片段
     setTimeout(() => {
       this.props.onClose();
+      const index = dialogInstanceCache.findIndex(cur => cur.props.id === this.props.id);
+      if (index > -1) {
+        dialogInstanceCache.splice(index, 1);
+      }
+      this.initZeroOpacity();
     });
   }
   startTimer () {
@@ -320,19 +336,21 @@ export default class Dialog extends React.PureComponent {
   // 获取dialog的样式
   get dialogstyles () {
     let styles = {};
-    if (this.props.hidden) {
-      styles = {
-        ...styles,
-        left: '-9999px',
-        top: '-9999px',
-        visibility: 'hidden'
-      };
-    }
     styles = {
       ...styles,
       zIndex: this.props.zIndex
     };
     return styles;
+  }
+  get hiddenStyles () {
+    if (this.props.hidden) {
+      return {
+        left: '-9999px',
+        top: '-9999px',
+        visibility: 'hidden'
+      };
+    }
+    return {};
   }
   convertSize (size) {
     let res;
@@ -390,9 +408,39 @@ export default class Dialog extends React.PureComponent {
       }
     }
   }
+  setTop () {
+
+  }
+  initZeroOpacity () {
+    const l = dialogInstanceCache.length;
+    let isHaveOverlay = false;
+    // 倒序循环
+    for (let i = l - 1; i >=0; i-- ) {
+      const instance = dialogInstanceCache[i];
+      console.log(dialogInstanceCache, i, instance);
+      const { hidden, modal} = instance.props;
+      if (!hidden && modal) {
+        if (!isHaveOverlay) {
+          isHaveOverlay = true;
+          if (instance.state.zeroOpacity) {
+            instance.setState({
+              zeroOpacity: false
+            });
+          }
+        } else {
+          if (!instance.state.zeroOpacity) {
+            instance.setState({
+              zeroOpacity: true
+            });
+          }
+        }
+      }
+    }
+    return false;
+  }
   render() {
     const className = classnames(this.props.className, this.props.css, this.props.prefixCls);
-    return <div>
+    return <div style={this.hiddenStyles}>
       <div className={className} style={this.dialogstyles}
         ref={ele => this.dialogRef = ele}  id={`dialog${this.props.id}`}
         onClick={this.handleClickDialog}
@@ -401,7 +449,7 @@ export default class Dialog extends React.PureComponent {
         {this.renderContent()}
         {this.renderFooter()}
       </div>
-      { this.props.modal ? <Overlay zIndex={this.props.modalIndex}/> : null}
+      { this.props.modal ? <Overlay zIndex={this.props.modalIndex} zeroOpacity={this.state.zeroOpacity}/> : null}
     </div>;
   }
 }

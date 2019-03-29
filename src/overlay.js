@@ -9,20 +9,27 @@ export default class Overlay extends React.Component{
   static propTypes = {
     zIndex: PropTypes.number.isRequired,
     position: PropTypes.string,
-    resize: PropTypes.bool
+    resize: PropTypes.bool,
+    zeroOpacity: PropTypes.bool
   }
   static defaultProps = {
     prefixCls: 'm-dialog',
     position: 'fixed',
-    resize: true
+    resize: true,
+    zeroOpacity: false
   }
   componentDidUpdate (prevProps, prevState) {
 
   }
   get styles (){
-    return {
+    const res = {
       zIndex: this.props.zIndex
     };
+    // 强制透明
+    if (this.props.zeroOpacity) {
+      res.opacity = 0;
+    }
+    return res;
   }
   render () {
     return <div className={`${this.props.prefixCls}-layout`} style={this.styles} ref={ele => this.overlayEle = ele}></div>;
