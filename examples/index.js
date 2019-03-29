@@ -14,10 +14,11 @@ class Demo extends React.PureComponent {
 window.dialog = dialog;
 
 const res = dialog({
-  title: 'test',
+  title: <span>title</span>,
   content: 'welcome',
   button: ['ok', 'cancle'],
   position: 'c',
+  // closeIcon: null,
   onClose: function (...arg) {
     console.log(this);
     console.log('onClose', arg);

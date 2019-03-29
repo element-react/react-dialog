@@ -21,6 +21,8 @@ export default class Dialog extends React.PureComponent {
   static propTypes = {
     // 超时自动关闭
     timeout: PropTypes.number,
+    // 关闭按钮 -设置空就没有关闭按钮
+    closeIcon:  PropTypes.element,
     // 标题，可以是一个element或者string
     title: PropTypes.oneOfType([
       PropTypes.element,
@@ -92,6 +94,7 @@ export default class Dialog extends React.PureComponent {
   }
   static defaultProps = {
     timeout: 0,
+    closeIcon: closeSvg,
     button: ['ok'],
     hidden: false,
     prefixCls: 'm-dialog',
@@ -373,7 +376,7 @@ export default class Dialog extends React.PureComponent {
     if (title !== null && title!== undefined) {
       return <div className={`${prefixCls}-header`}>
         <div>{title || ''}</div>
-        <div className={`${prefixCls}-close`} onClick={this.props.close}><em>{closeSvg}</em></div>
+        {this.props.closeIcon ? <div className={`${prefixCls}-close`} onClick={this.props.close}><em>{this.props.closeIcon}</em></div> : null}
       </div>;
     }
   }
