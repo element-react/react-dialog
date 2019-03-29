@@ -28,6 +28,9 @@ const res = dialog({
   onShow: function () {
     console.log('onShow');
   },
+  onBtnClick:function (btnId) {
+    console.log('btnId', btnId);
+  },
   onBeforeClosed: function () {
     console.log('in on before close');
   }
@@ -35,7 +38,7 @@ const res = dialog({
 });
 window.res = res;
 res.onClose(function () {
-  console.log('111 qie ke nao');
+  console.log('hhh onClose');
 });
 res.onShow(function () {
   console.log('hhh onshow');
@@ -47,7 +50,11 @@ res.onBeforeClosed(function () {
   console.log('hhh, onBeforeClose');
   // return false;
 });
+res.onBtnClick(function (btnId) {
+  console.log('hhh, btnId', btnId);
+});
 // res.title = '111';
 console.log(res);
+
 
 ReactDom.render(<Demo/>, document.querySelector('#app'));

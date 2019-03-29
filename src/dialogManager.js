@@ -48,11 +48,8 @@ export class DialogManager extends React.Component{
   modifyCache (props) {
     const id = Dialog.genId();
     const key = String(props.key || id);
-    const zIndex = Dialog.genZIndex();
+    const index = this.state.cache.findIndex(cur => cur.key === key);
     props = {
-      key,
-      id: key,
-      zIndex,
       ...props,
       close: this.removeCache.bind(this, key),
       onClose: this.composeFun(key, 'onClose', props.onClose),
@@ -60,8 +57,19 @@ export class DialogManager extends React.Component{
       onHide: this.composeFun(key, 'onHide', props.onHide),
       onBtnClick: this.composeFun(key, 'onBtnClick', props.onBtnClick)
     };
+    // 更新弹窗
+    if (index < 0) {
+      // 不管是不是modle都生成这个index
+      const modalIndex = Dialog.genZIndex();
+      const zIndex = Dialog.genZIndex();
+      Object.assign(props, {
+        key,
+        id: key,
+        zIndex,
+        modalIndex
+      });
+    }
     this.setState(({ cache }) => {
-      const index = cache.findIndex(cur => cur.key === key);
       const newCache = cache.slice(0);
       if (index > -1) {
         newCache.splice(index, 1, props);
@@ -81,7 +89,7 @@ export class DialogManager extends React.Component{
     const onBeforeClosed = this.composeFun(key, 'onBeforeClosed', props.onBeforeClosed);
     if (index > -1) {
       const res = onBeforeClosed();
-      if (res.some(cur => cur === false)) {
+      if (res && res.some(cur => cur === false)) {
         return;
       }
       // 调用onBereClosed，如果任意一个fun返回false，则阻止弹窗关闭

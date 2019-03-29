@@ -1,8 +1,9 @@
 import React from 'react';
 import globalConfig from './globalConfig';
 import PropTypes from 'prop-types';
+import Overlay from './overlay';
 import './index.less';
-import { closeSvg, isPlainObject, isNumber, noop } from './utils';
+import { closeSvg, isPlainObject, isNumber, noop, closest } from './utils';
 import classnames from 'classnames';
 export default class Dialog extends React.PureComponent {
   constructor (props) {
@@ -69,6 +70,8 @@ export default class Dialog extends React.PureComponent {
       PropTypes.string,
       PropTypes.number
     ]),
+    modal: PropTypes.bool.isRequired,
+    modalIndex: PropTypes.number.isRequired,
     // 关闭方法
     close: PropTypes.func.isRequired,
     // 弹窗关闭后
@@ -86,6 +89,8 @@ export default class Dialog extends React.PureComponent {
     hidden: false,
     prefixCls: 'm-dialog',
     position: 'c',
+    modal: true,
+    modalIndex: 0,
     onClose: noop,
     onBtnClick: noop,
     onHide: noop,
@@ -109,7 +114,6 @@ export default class Dialog extends React.PureComponent {
       }
     }
   }
-
   componentDidMount () {
     this.startTimer();
     // 组件挂载后调用直接重新计算位置 -- 因为首次获取styles的时候组件并没有挂载，所以必须要在组件挂载后强制更新一次
@@ -313,21 +317,6 @@ export default class Dialog extends React.PureComponent {
       this.dialogMainRef.style.height = res.height;
     }
   }
-  convertSize (size) {
-    let res;
-    // 整数的情况下认为是px为单位，如果是个字符串就认为是别的单位
-    if (isNumber.test(size)) {
-      let w = parseInt(size, 10);
-      if (w === 0) {
-        res = 'auto';
-      } else if (w > 0) {
-        res = w + 'px';
-      }
-    } else {
-      res = this.height;
-    }
-    return res;
-  }
   // 获取dialog的样式
   get dialogstyles () {
     let styles = {};
@@ -344,6 +333,21 @@ export default class Dialog extends React.PureComponent {
       zIndex: this.props.zIndex
     };
     return styles;
+  }
+  convertSize (size) {
+    let res;
+    // 整数的情况下认为是px为单位，如果是个字符串就认为是别的单位
+    if (isNumber.test(size)) {
+      let w = parseInt(size, 10);
+      if (w === 0) {
+        res = 'auto';
+      } else if (w > 0) {
+        res = w + 'px';
+      }
+    } else {
+      res = this.height;
+    }
+    return res;
   }
   renderHeader () {
     const title = this.props.title;
@@ -376,12 +380,28 @@ export default class Dialog extends React.PureComponent {
       </div>;
     }
   }
+  handleClickDialog = (e) => {
+    const res = closest(e.target, '[data-action]', true);
+    if (res) {
+      const action = res.getAttribute('data-action');
+      const clickRes = this.props.onBtnClick(action);
+      if (!clickRes || clickRes.every(cur => cur !== false)) {
+        this.props.close();
+      }
+    }
+  }
   render() {
     const className = classnames(this.props.className, this.props.css, this.props.prefixCls);
-    return <div className={className} style={this.dialogstyles} ref={ele => this.dialogRef = ele}  id={`dialog${this.props.id}`}>
-      {this.renderHeader()}
-      {this.renderContent()}
-      {this.renderFooter()}
+    return <div>
+      <div className={className} style={this.dialogstyles}
+        ref={ele => this.dialogRef = ele}  id={`dialog${this.props.id}`}
+        onClick={this.handleClickDialog}
+      >
+        {this.renderHeader()}
+        {this.renderContent()}
+        {this.renderFooter()}
+      </div>
+      { this.props.modal ? <Overlay zIndex={this.props.modalIndex}/> : null}
     </div>;
   }
 }
