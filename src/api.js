@@ -7,26 +7,6 @@ export default function (manager, key) {
     closeAll () {
       manager.removeAll();
     },
-    // dom已删除
-    onClose () {
-
-    },
-    // dom未删除
-    onBeforeClosed () {
-
-    },
-    // 内部按钮点击
-    onBtnClick (btn) {
-
-    },
-    // 隐藏当前弹窗
-    onHide () {
-
-    },
-    // 显示当前弹窗
-    onShow () {
-
-    },
     setTop () {
 
     },
@@ -37,6 +17,20 @@ export default function (manager, key) {
       return key;
     }
   };
+
+  // 各种事件的添加
+  ['onClose', 'onBeforeClosed', 'onBtnClick',
+    'onHide', 'onShow'].forEach(one => {
+    res[one] = function (fun) {
+      if (typeof fun === 'function') {
+        const listeners = manager.listeners;
+        listeners[key] = listeners[key] || {};
+        listeners[key][one] = listeners[key][one] || [];
+        listeners[key][one].push(fun);
+      }
+    };
+  });
+
   // 不提供zIndex的修改方法
   ['width', 'height', 'position',
     'hidden', 'button', 'title',

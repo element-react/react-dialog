@@ -35,6 +35,7 @@ export default class Dialog extends React.PureComponent {
     zIndex: PropTypes.number,
     // 遵循classnames方法的定义
     css: PropTypes.any,
+    id: PropTypes.string,
     // 粗略的检查postion字段
     position: function(props, propName, componentName) {
       const checkPos = /(^[lcr][tcb]$)|(^[tcb][lcr]$)|(^[tcblr]$)/;
@@ -72,8 +73,6 @@ export default class Dialog extends React.PureComponent {
     close: PropTypes.func.isRequired,
     // 弹窗关闭后
     onClose: PropTypes.func,
-    // 弹窗关闭前
-    onBeforeClosed: PropTypes.func,
     // 按钮点击事件，每个按钮会有固定的id做区分
     onBtnClick: PropTypes.func,
     // 弹窗隐藏事件
@@ -88,7 +87,6 @@ export default class Dialog extends React.PureComponent {
     prefixCls: 'm-dialog',
     position: 'c',
     onClose: noop,
-    onBeforeClosed: noop,
     onBtnClick: noop,
     onHide: noop,
     onShow: noop
@@ -101,6 +99,15 @@ export default class Dialog extends React.PureComponent {
       this.setMainStyles();
       this.setPos();
     }
+    if (prevProps.hidden !== this.props.hidden) {
+      if (this.props.hidden) {
+        this.props.onHide();
+      } else {
+        this.setMainStyles();
+        this.setPos();
+        this.props.onShow();
+      }
+    }
   }
 
   componentDidMount () {
@@ -108,6 +115,14 @@ export default class Dialog extends React.PureComponent {
     // 组件挂载后调用直接重新计算位置 -- 因为首次获取styles的时候组件并没有挂载，所以必须要在组件挂载后强制更新一次
     this.setMainStyles();
     this.setPos();
+    // 为了保证回调能调到，放入下个时间片
+    setTimeout(() => {
+      if (this.props.hidden) {
+        this.props.onHide();
+      } else {
+        this.props.onShow();
+      }
+    });
   }
   componentWillUnmount () {
     this.endTimer();
@@ -336,7 +351,7 @@ export default class Dialog extends React.PureComponent {
     if (title !== null && title!== undefined) {
       return <div className={`${prefixCls}-header`}>
         <div>{title || ''}</div>
-        <div className={`${prefixCls}-close`}><em>{closeSvg}</em></div>
+        <div className={`${prefixCls}-close`} onClick={this.props.close}><em>{closeSvg}</em></div>
       </div>;
     }
   }
@@ -363,7 +378,7 @@ export default class Dialog extends React.PureComponent {
   }
   render() {
     const className = classnames(this.props.className, this.props.css, this.props.prefixCls);
-    return <div className={className} style={this.dialogstyles} ref={ele => this.dialogRef = ele}>
+    return <div className={className} style={this.dialogstyles} ref={ele => this.dialogRef = ele}  id={`dialog${this.props.id}`}>
       {this.renderHeader()}
       {this.renderContent()}
       {this.renderFooter()}
