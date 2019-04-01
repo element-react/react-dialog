@@ -326,9 +326,6 @@ export default class Dialog extends React.PureComponent {
       }
     }
   }
-  setTop () {
-
-  }
   initZeroOpacity () {
     const l = dialogInstanceCache.length;
     let isHaveOverlay = false;
