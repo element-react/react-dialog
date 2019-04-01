@@ -8,6 +8,7 @@ import classnames from 'classnames';
 
 // 是个缓存，缓存所有dialog的instance
 export const dialogInstanceCache = [];
+// window.dialogInstanceCache = dialogInstanceCache;
 export default class Dialog extends React.PureComponent {
   constructor (props) {
     super(props);
@@ -36,7 +37,8 @@ export default class Dialog extends React.PureComponent {
       }
     }
     // 模态属性改变，或者显示隐藏改变则需要修改zeroOpacity
-    if (prevProps.hidden !== this.props.hidden || prevProps.modal !== this.props.modal) {
+    if (prevProps.hidden !== this.props.hidden || prevProps.modal !== this.props.modal ||
+      prevProps.zIndex !== this.props.zIndex || prevProps.modalIndex !== this.props.zIndex) {
       this.initZeroOpacity();
     }
   }
@@ -333,7 +335,6 @@ export default class Dialog extends React.PureComponent {
     // 倒序循环
     for (let i = l - 1; i >=0; i-- ) {
       const instance = dialogInstanceCache[i];
-      console.log(dialogInstanceCache, i, instance);
       const { hidden, modal} = instance.props;
       if (!hidden && modal) {
         if (!isHaveOverlay) {

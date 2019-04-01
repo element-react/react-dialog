@@ -8,7 +8,7 @@ export default function (manager, key) {
       manager.removeAll();
     },
     setTop () {
-
+      manager.setTop(key);
     },
     toString () {
       return key;

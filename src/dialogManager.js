@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Dialog from './dialog';
+import Dialog, { dialogInstanceCache } from './dialog';
 import { dialogIdReg, noop }  from './utils';
 import api from './api';
 export class DialogManager extends React.Component{
@@ -44,6 +44,40 @@ export class DialogManager extends React.Component{
       return res.length ? res : undefined;
     };
   }
+  setTop(key) {
+    const cache =this.state.cache;
+    // 只有一个的时候不能设置top
+    if (cache.length <= 1) {
+      return this;
+    }
+    key = key.replace(dialogIdReg, '$1');
+    const index = cache.findIndex(cur => cur.key === key);
+    if (index > -1) {
+      // 已经在顶层
+      if (cache.length - 1 === index) {
+        return this;
+      }
+      this.setState(({ cache }) => {
+        const cur = cache[index];
+        const newCache = cache.slice(0);
+        newCache.splice(index, 1);
+        const modalIndex = Dialog.genZIndex();
+        const zIndex = Dialog.genZIndex();
+        newCache.push({
+          ...cur,
+          modalIndex,
+          zIndex
+        });
+        return {
+          cache: newCache
+        };
+      }, () => {
+        const res = dialogInstanceCache.splice(index, 1);
+        dialogInstanceCache.push(res[0]);
+
+      });
+    }
+  }
   // 修改dialog缓存的
   modifyCache (props) {
     const id = Dialog.genId();
@@ -82,6 +116,7 @@ export class DialogManager extends React.Component{
     });
     return key;
   }
+  // 删除dialog缓存
   removeCache (key) {
     key = key.replace(dialogIdReg, '$1');
     const index = this.state.cache.findIndex(cur => cur.key === key);
