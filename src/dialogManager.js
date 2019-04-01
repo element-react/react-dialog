@@ -120,10 +120,11 @@ export class DialogManager extends React.Component{
   removeCache (key) {
     key = key.replace(dialogIdReg, '$1');
     const index = this.state.cache.findIndex(cur => cur.key === key);
+    const instance = dialogInstanceCache[index];
     const props = this.state.cache[index];
     const onBeforeClosed = this.composeFun(key, 'onBeforeClosed', props.onBeforeClosed);
     if (index > -1) {
-      const res = onBeforeClosed();
+      const res = instance.__closeRet ? onBeforeClosed(instance.__closeRet) : onBeforeClosed();
       if (res && res.some(cur => cur === false)) {
         return;
       }
@@ -188,8 +189,9 @@ DialogManager.create = function (cfg = {}) {
   document.body.appendChild(ele);
   const rc = ReactDOM.render(<DialogManager {...opt}/>, ele);
   return function (opt) {
+    // 没有参数关闭所有
     if (!opt) {
-      return null;
+      return rc.removeAll();
     }
     let key = null;
     if (typeof opt === 'string') {

@@ -61,7 +61,11 @@ export default class Dialog extends React.PureComponent {
     this.endTimer();
     // 下一个时间片段
     setTimeout(() => {
-      this.props.onClose();
+      if (this.__closeRet) {
+        this.props.onClose(this.__closeRet);
+      } else {
+        this.props.onClose();
+      }
       const index = dialogInstanceCache.findIndex(cur => cur.props.id === this.props.id);
       if (index > -1) {
         dialogInstanceCache.splice(index, 1);
@@ -320,8 +324,12 @@ export default class Dialog extends React.PureComponent {
     const res = closest(e.target, '[data-action]', true);
     if (res) {
       const action = res.getAttribute('data-action');
+      const ret = res.getAttribute('data-ret');
       const clickRes = this.props.onBtnClick(action);
       if (!clickRes || clickRes.every(cur => cur !== false)) {
+        if (ret) {
+          this.__closeRet = ret;
+        }
         this.props.close();
       }
     }

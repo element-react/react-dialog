@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { dialog } from 'react-dialog';
+import { dialog } from '@element-react/react-dialog';
 class Demo extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -15,7 +15,7 @@ window.dialog = dialog;
 
 const res = dialog({
   title: <span>title</span>,
-  content: 'welcome',
+  content: <div>welcome<button data-action='test' data-ret='abc'>abc</button></div>,
   button: ['ok', 'cancle'],
   position: 'c',
   // closeIcon: null,
@@ -32,14 +32,14 @@ const res = dialog({
   onBtnClick:function (btnId) {
     console.log('btnId', btnId);
   },
-  onBeforeClosed: function () {
-    console.log('in on before close');
+  onBeforeClosed: function (ret) {
+    console.log('in on before close', ret);
   }
   // timeout: 3000
 });
 window.res = res;
-res.onClose(function () {
-  console.log('hhh onClose');
+res.onClose(function (ret) {
+  console.log('hhh onClose', ret);
 });
 res.onShow(function () {
   console.log('hhh onshow');
@@ -47,8 +47,8 @@ res.onShow(function () {
 res.onHide(function () {
   console.log('hhh onHide');
 });
-res.onBeforeClosed(function () {
-  console.log('hhh, onBeforeClose');
+res.onBeforeClosed(function (ret) {
+  console.log('hhh, onBeforeClose', ret);
   // return false;
 });
 res.onBtnClick(function (btnId) {
