@@ -50,3 +50,17 @@ export const closest = (element, selector, checkYoSelf) => {
     parent = parent.parentNode;
   }
 };
+
+export const ready = function (fn) {
+  if (document.addEventListener) {
+    if (~['complete', 'loaded', 'interactive'].indexOf(document.readyState)) {
+      setTimeout(fn, 0);
+    } else {
+      var loadFn = function () {
+        document.removeEventListener('DOMContentLoaded', loadFn, false);
+        fn();
+      };
+      document.addEventListener('DOMContentLoaded', loadFn, false);
+    }
+  }
+};

@@ -1,6 +1,7 @@
 import './index.less';
 import DialogManager from './dialogManager';
 export { default } from './dialog';
+import './closeByEsc';
 
 // 创建并返回dialog接口
 export const dialog = DialogManager.create();
