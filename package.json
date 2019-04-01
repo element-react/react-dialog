@@ -10,6 +10,7 @@
     "build": "npm run clean && cross-env NODE_ENV=production rollup -c ./scripts/rollup.config.js",
     "demo": "npm run clean && rollup -w -m -c ./scripts/rollup.config.demo.js",
     "start": "npm run clean && rollup -w -m -c ./scripts/build.js",
+    "start:dialog": "npm run clean && rollup -w -m -c ./scripts/rollup.config.js",
     "lint": "eslint --ext .js,.jsx src scripts",
     "lint:fix": "eslint --fix --cache --ext .js,.jsx src scripts",
     "lint-staged": "lint-staged",
@@ -34,7 +35,6 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/runtime-corejs2": "^7.4.2",
     "babel-eslint": "^10.0.1",
-    "classnames": "^2.2.6",
     "cross-env": "^5.2.0",
     "cssnano": "^4.1.10",
     "eslint": "^5.15.3",
@@ -48,9 +48,11 @@
     "react-dom": "^16.8.5",
     "rimraf": "^2.6.3",
     "rollup": "^1.7.0",
+    "rollup-plugin-alias": "^1.5.1",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-buble": "^0.19.6",
     "rollup-plugin-bundle-html": "^0.1.5",
+    "rollup-plugin-cjs-es": "^0.7.0",
     "rollup-plugin-commonjs": "^9.2.2",
     "rollup-plugin-node-globals": "^1.4.0",
     "rollup-plugin-node-resolve": "^4.0.1",
@@ -60,6 +62,7 @@
     "rollup-plugin-uglify": "^6.0.2"
   },
   "dependencies": {
+    "classnames": "^2.2.6",
     "@babel/runtime": "^7.4.2"
   },
   "directories": {
@@ -83,5 +86,9 @@
     "dialog",
     "alert",
     "toast"
-  ]
+  ],
+  "engines": {
+    "node": ">= 8.0.0",
+    "npm": ">= 5.0.0"
+  }
 }

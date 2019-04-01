@@ -11,10 +11,11 @@ const globals = require('rollup-plugin-node-globals');
 // PostCSS plugins
 const cssnext = require('postcss-cssnext');
 const cssnano = require('cssnano');
-
+const alias = require('rollup-plugin-alias');
 const basePath = path.resolve(__dirname, '../');
 const distBasePath = path.resolve(basePath, 'dist');
-
+const pkg = require('../package.json');
+const name = pkg.name;
 const getCssPlugin = function () {
   return postcss({
     plugins: [
@@ -34,7 +35,11 @@ function genConfig () {
       format: 'iife',
       file: `${basePath}/dist/examples/index.js`
     },
+   
     plugins: [
+      alias({
+        [name]: 'src/index.js'
+      }),
       babel({
         babelrc: false,
         runtimeHelpers: true,
@@ -78,7 +83,6 @@ function genConfig () {
         filename: 'index.html',
         inject: 'body',
         externals: [
-          
         ]
       }),
       getCssPlugin()

@@ -14,97 +14,10 @@ export default class Dialog extends React.PureComponent {
     this.dialogRef = null;
     this.dialogMainRef = null;
     dialogInstanceCache.push(this);
+    this.handleClickDialog = this.handleClickDialog.bind(this);
     this.state = {
       zeroOpacity: false
     };
-  }
-  static propTypes = {
-    // 超时自动关闭
-    timeout: PropTypes.number,
-    // 关闭按钮 -设置空就没有关闭按钮
-    closeIcon:  PropTypes.element,
-    // 标题，可以是一个element或者string
-    title: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.string,
-      PropTypes.arrayOf(PropTypes.element)
-    ]),
-    // 内容可以是一个element或者string
-    content: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.string,
-      PropTypes.array
-    ]),
-    //  当前是显示还是隐藏
-    hidden: PropTypes.bool,
-    // 按钮如['ok', 'cancle'] 或者标签中代理data-action的会被自动代理成onBtnClick时间
-    button: PropTypes.arrayOf(PropTypes.string),
-    // classname的前缀
-    prefixCls: PropTypes.string,
-    // zIndex值
-    zIndex: PropTypes.number,
-    // 遵循classnames方法的定义
-    css: PropTypes.any,
-    id: PropTypes.string,
-    // 粗略的检查postion字段
-    position: function(props, propName, componentName) {
-      const checkPos = /(^[lcr][tcb]$)|(^[tcb][lcr]$)|(^[tcblr]$)/;
-      const posKeys = ['left', 'top', 'bottom', 'right', 'marginTop', 'marginLeft'];
-      const val = props[propName];
-      const t = typeof val;
-      let res = true;
-      if (isPlainObject(val)) {
-        res = posKeys.some(cur => cur !== undefined && cur !== null);
-      } else if (Array.isArray(val)) {
-        res = val.length === 2 && val[0] !== undefined && val[1] !== undefined;
-      } else if (t === 'number') {
-        res = val >= 0 && val <= 8;
-      } else if (t === 'string') {
-        res = checkPos.test(val);
-      }
-      if (!res) {
-        return new Error(
-          'Invalid prop `' + propName + '` supplied to' +
-          ' `' + componentName + '`. Validation failed.'
-        );
-      }
-    },
-    // 宽度，未设置则是auto
-    width: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]),
-    // 高度，未设置则是auto
-    height: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
-    ]),
-    modal: PropTypes.bool.isRequired,
-    modalIndex: PropTypes.number.isRequired,
-    // 关闭方法
-    close: PropTypes.func.isRequired,
-    // 弹窗关闭后
-    onClose: PropTypes.func,
-    // 按钮点击事件，每个按钮会有固定的id做区分
-    onBtnClick: PropTypes.func,
-    // 弹窗隐藏事件
-    onHide: PropTypes.func,
-    // 弹窗显示事件
-    onShow: PropTypes.func
-  }
-  static defaultProps = {
-    timeout: 0,
-    closeIcon: closeSvg,
-    button: ['ok'],
-    hidden: false,
-    prefixCls: 'm-dialog',
-    position: 'c',
-    modal: true,
-    modalIndex: 0,
-    onClose: noop,
-    onBtnClick: noop,
-    onHide: noop,
-    onShow: noop
   }
   componentDidUpdate(prevProps) {
     if (prevProps.width !== this.props.width ||
@@ -401,7 +314,7 @@ export default class Dialog extends React.PureComponent {
       </div>;
     }
   }
-  handleClickDialog = (e) => {
+  handleClickDialog (e) {
     const res = closest(e.target, '[data-action]', true);
     if (res) {
       const action = res.getAttribute('data-action');
@@ -456,6 +369,97 @@ export default class Dialog extends React.PureComponent {
     </div>;
   }
 }
+
+Dialog.propTypes = {
+  // 超时自动关闭
+  timeout: PropTypes.number,
+  // 关闭按钮 -设置空就没有关闭按钮
+  closeIcon:  PropTypes.element,
+  // 标题，可以是一个element或者string
+  title: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.element)
+  ]),
+  // 内容可以是一个element或者string
+  content: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.string,
+    PropTypes.array
+  ]),
+  //  当前是显示还是隐藏
+  hidden: PropTypes.bool,
+  // 按钮如['ok', 'cancle'] 或者标签中代理data-action的会被自动代理成onBtnClick时间
+  button: PropTypes.arrayOf(PropTypes.string),
+  // classname的前缀
+  prefixCls: PropTypes.string,
+  // zIndex值
+  zIndex: PropTypes.number,
+  // 遵循classnames方法的定义
+  css: PropTypes.any,
+  id: PropTypes.string,
+  // 粗略的检查postion字段
+  position: function(props, propName, componentName) {
+    const checkPos = /(^[lcr][tcb]$)|(^[tcb][lcr]$)|(^[tcblr]$)/;
+    const posKeys = ['left', 'top', 'bottom', 'right', 'marginTop', 'marginLeft'];
+    const val = props[propName];
+    const t = typeof val;
+    let res = true;
+    if (isPlainObject(val)) {
+      res = posKeys.some(cur => cur !== undefined && cur !== null);
+    } else if (Array.isArray(val)) {
+      res = val.length === 2 && val[0] !== undefined && val[1] !== undefined;
+    } else if (t === 'number') {
+      res = val >= 0 && val <= 8;
+    } else if (t === 'string') {
+      res = checkPos.test(val);
+    }
+    if (!res) {
+      return new Error(
+        'Invalid prop `' + propName + '` supplied to' +
+        ' `' + componentName + '`. Validation failed.'
+      );
+    }
+  },
+  // 宽度，未设置则是auto
+  width: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  // 高度，未设置则是auto
+  height: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  modal: PropTypes.bool.isRequired,
+  modalIndex: PropTypes.number.isRequired,
+  // 关闭方法
+  close: PropTypes.func.isRequired,
+  // 弹窗关闭后
+  onClose: PropTypes.func,
+  // 按钮点击事件，每个按钮会有固定的id做区分
+  onBtnClick: PropTypes.func,
+  // 弹窗隐藏事件
+  onHide: PropTypes.func,
+  // 弹窗显示事件
+  onShow: PropTypes.func
+};
+Dialog.defaultProps = {
+  timeout: 0,
+  closeIcon: closeSvg,
+  button: ['ok'],
+  hidden: false,
+  prefixCls: 'm-dialog',
+  position: 'c',
+  modal: true,
+  modalIndex: 0,
+  onClose: noop,
+  onBtnClick: noop,
+  onHide: noop,
+  onShow: noop
+};
+
+
 // 挂载在dialog组件上，可以方便修改
 Dialog.globalConfig = globalConfig;
 
@@ -463,3 +467,4 @@ Dialog.globalConfig = globalConfig;
 ['startZIndex', 'startId'].forEach(name => {
   Dialog[name.replace('start', 'gen')] = () => Dialog.globalConfig[name]++;
 });
+

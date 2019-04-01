@@ -1,9 +1,7 @@
 
 // Rollup plugins
-// const buble = require('rollup-plugin-buble');
-const babel = require('rollup-plugin-babel');
-const resolve = require('rollup-plugin-node-resolve');
-const commonjs = require('rollup-plugin-commonjs');
+const buble = require('rollup-plugin-buble');
+const cjs = require('rollup-plugin-cjs-es');
 const postcss = require('rollup-plugin-postcss');
 const path = require('path');
 const replace = require('rollup-plugin-replace');
@@ -45,14 +43,14 @@ function getBuild () {
   const plugins = [];
   const outputFile = {
     globals: {
-      'react': 'React'
+      'react': 'React',
+      'react-dom': 'ReactDOM',
+      'prop-types': 'PropTypes',
+      'classnames': 'classNames'
     },
     name: 'dialog',
     banner,
     extend: true,
-    paths: {
-      react: 'react'
-    },
     sourceMap: !isProduct
   };
   const build = {
@@ -65,7 +63,10 @@ function getBuild () {
       });
     }),
     external: [
-      'react'
+      'react',
+      'react-dom',
+      'prop-types',
+      'classnames'
     ],
     plugins,
     cssPlugin: getCssPlugin()
@@ -80,44 +81,19 @@ function genConfig (opts) {
     output: opts.output,
     external: opts.external,
     plugins: [
-      babel({
-        babelrc: false,
-        runtimeHelpers: false,
-        exclude: 'node_modules/**',
-        presets: [['@babel/preset-env', {
-          'targets' : {
-            'browsers':  ['> 1%', 'last 2 versions', 'iOS >= 8', 'Android >= 4', 'Explorer >= 8', 'Firefox >= 43', 'Chrome >= 45']
-          },
-          modules: false
-        }], '@babel/preset-react'],
-        plugins: [
-          '@babel/plugin-proposal-class-properties',
-          ['@babel/plugin-proposal-decorators', { 'legacy': true }],
-          '@babel/plugin-proposal-export-namespace-from',
-          '@babel/plugin-proposal-function-sent',
-          '@babel/plugin-proposal-json-strings',
-          '@babel/plugin-proposal-numeric-separator',
-          '@babel/plugin-proposal-throw-expressions',
-          '@babel/plugin-syntax-dynamic-import',
-          '@babel/plugin-syntax-import-meta',
-          ['@babel/plugin-transform-runtime', {
-            'absoluteRuntime': false,
-            corejs: false,
-            helpers: false
-          }]
-        ]
-      }),      
-      commonjs(),
-      resolve({ jsnext: true, main: true, browser: true }),
       opts.cssPlugin,
-      // buble({
-      //   transforms: {
-      //     dangerousForOf: true,
-      //     dangerousTaggedTemplateString: true,
-      //     generator: false,
-      //     asyncAwait: false
-      //   }
-      // }),
+      buble({
+        'objectAssign': 'Object.Assign',
+        transforms: {
+          dangerousForOf: true,
+          dangerousTaggedTemplateString: true,
+          generator: false,
+          asyncAwait: false
+        }
+      }),
+      cjs({
+        nested: true
+      }),
       globals()
     ].concat(opts.plugins || [])
   };

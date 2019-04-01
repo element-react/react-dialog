@@ -1,6 +1,6 @@
 import React from 'react';
-import ReactDom from 'react-dom';
-import { dialog } from '../src/index';
+import ReactDOM from 'react-dom';
+import { dialog } from 'react-dialog';
 class Demo extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -58,4 +58,4 @@ res.onBtnClick(function (btnId) {
 console.log(res);
 
 
-ReactDom.render(<Demo/>, document.querySelector('#app'));
+ReactDOM.render(<Demo/>, document.querySelector('#app'));

@@ -6,18 +6,6 @@ export default class Overlay extends React.Component{
     super(props);
     this.overlayEle = null;
   }
-  static propTypes = {
-    zIndex: PropTypes.number.isRequired,
-    position: PropTypes.string,
-    resize: PropTypes.bool,
-    zeroOpacity: PropTypes.bool
-  }
-  static defaultProps = {
-    prefixCls: 'm-dialog',
-    position: 'fixed',
-    resize: true,
-    zeroOpacity: false
-  }
   componentDidUpdate (prevProps, prevState) {
 
   }
@@ -35,3 +23,17 @@ export default class Overlay extends React.Component{
     return <div className={`${this.props.prefixCls}-layout`} style={this.styles} ref={ele => this.overlayEle = ele}></div>;
   }
 }
+
+Overlay.propTypes = {
+  zIndex: PropTypes.number.isRequired,
+  position: PropTypes.string,
+  resize: PropTypes.bool,
+  zeroOpacity: PropTypes.bool
+};
+
+Overlay.defaultProps = {
+  prefixCls: 'm-dialog',
+  position: 'fixed',
+  resize: true,
+  zeroOpacity: false
+};
