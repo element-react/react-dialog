@@ -7,7 +7,7 @@
   "unpkg": "dist/dialog.js",
   "scripts": {
     "clean": "rimraf ./dist",
-    "build": "npm run clean && cross-env NODE_ENV=production rollup -c ./scripts/rollup.config.js",
+    "build": "npm run clean && cross-env NODE_ENV=production rollup -c ./scripts/build.js",
     "demo": "npm run clean && rollup -w -m -c ./scripts/rollup.config.demo.js",
     "start": "npm run clean && rollup -w -m -c ./scripts/build.js",
     "start:dialog": "npm run clean && rollup -w -m -c ./scripts/rollup.config.js",
