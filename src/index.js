@@ -2,6 +2,7 @@ import './index.less';
 import DialogManager from './dialogManager';
 export { default } from './dialog';
 import './closeByEsc';
+import './resize';
 
 // 创建并返回dialog接口
 export const dialog = DialogManager.create();

@@ -1,8 +1,8 @@
 export default function (manager, key) {
   const res = {
     manager,
-    close () {
-      manager.removeCache(key);
+    close (ret) {
+      manager.removeCache(key, ret);
     },
     closeAll () {
       manager.removeAll();

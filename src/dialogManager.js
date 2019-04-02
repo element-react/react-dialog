@@ -117,10 +117,14 @@ export class DialogManager extends React.Component{
     return key;
   }
   // 删除dialog缓存
-  removeCache (key) {
+  // ret表示删除的返回值
+  removeCache (key, ret) {
     key = key.replace(dialogIdReg, '$1');
     const index = this.state.cache.findIndex(cur => cur.key === key);
     const instance = dialogInstanceCache[index];
+    if (ret) {
+      instance.__closeRet = ret;
+    }
     const props = this.state.cache[index];
     const onBeforeClosed = this.composeFun(key, 'onBeforeClosed', props.onBeforeClosed);
     if (index > -1) {
