@@ -1,6 +1,6 @@
 {
   "name": "@element-react/react-dialog",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "react  component dialog",
   "main": "dist/dialog.common.js",
   "module": "dist/dialog.esm.js",
