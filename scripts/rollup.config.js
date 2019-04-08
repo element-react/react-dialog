@@ -55,7 +55,7 @@ function getBuild () {
   };
   const build = {
     input: `${basePath}/src/index.js`,
-    output: [['umd', ''], ['esm', 'ems'], ['cjs', 'common']].map(cur => {
+    output: [['umd', ''], ['esm', 'esm'], ['cjs', 'common']].map(cur => {
       return Object.assign({}, outputFile, {
         format: cur[0],
         exports: 'named',
