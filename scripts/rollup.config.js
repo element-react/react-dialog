@@ -83,7 +83,7 @@ function genConfig (opts) {
     plugins: [
       opts.cssPlugin,
       buble({
-        'objectAssign': 'Object.Assign',
+        'objectAssign': 'Object.assign',
         transforms: {
           dangerousForOf: true,
           dangerousTaggedTemplateString: true,
