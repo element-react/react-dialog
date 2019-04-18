@@ -16,6 +16,11 @@ const basePath = path.resolve(__dirname, '../');
 const distBasePath = path.resolve(basePath, 'dist');
 const pkg = require('../package.json');
 const name = pkg.name;
+let env = process.env.NODE_ENV;
+if (!env) {
+  env = process.env.NODE_ENV = 'development';
+}
+const isProduct = env === 'production';
 const getCssPlugin = function () {
   return postcss({
     plugins: [
@@ -71,12 +76,7 @@ function genConfig () {
       }),
       globals(),
       resolve({ jsnext: true, main: true, browser: true }),
-      serve({
-        contentBase: ['dist'],
-        port: 9002,
-        open: false,
-        openPage: '/examples/index.html'
-      }),
+   
       html({
         template: 'view/template.html',
         dest: 'dist/examples',
@@ -88,6 +88,14 @@ function genConfig () {
       getCssPlugin()
     ]
   };
+  if (!isProduct) {
+    config.plugins.push(serve({
+      contentBase: ['dist'],
+      port: 9002,
+      open: false,
+      openPage: '/examples/index.html'
+    }));
+  }
   return config;
 }
 module.exports = genConfig();

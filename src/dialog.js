@@ -20,6 +20,12 @@ export default class Dialog extends React.PureComponent {
       zeroOpacity: false
     };
   }
+  get dialogPos () {
+    if (this.dialogRef) {
+      const rect = window.getComputedStyle(this.dialogRef);
+      return rect.position;
+    }
+  }
   componentDidUpdate(prevProps) {
     if (prevProps.width !== this.props.width ||
       prevProps.height !== this.props.height ||
@@ -86,6 +92,7 @@ export default class Dialog extends React.PureComponent {
       this._timer = null;
     }
   }
+  // mount之后再调用
   setPos () {
     // 根据宽高计算对话框坐标
     const	posReg = {

@@ -165,3 +165,42 @@
 	opacity: .4;
 	overflow: hidden;
 }
+
+
+.m-dialog-toast{
+  background: #3e3e3e;
+  box-shadow: 0 0 10px #626262;
+  color: #fff;
+  border:1px solid #3e3e3e;
+  font-size: 12px;
+  padding-top: 0;
+  .m-dialog-body {
+    min-height: auto;
+  }
+  a {
+      text-decoration: underline;
+      color: #ffc000;
+      :link {
+          color: #ffc000;
+      }
+
+      :visited {
+          color: #ffc000;
+      }
+
+      :hover {
+          color: #ffc000;
+      }
+  }
+  .m-dialog-body{
+      &,.m-dialog-main{
+          min-height:inherit;
+          background: transparent;
+          text-align: center;
+      }
+      .m-dialog-main{
+        padding: 10px 14px;
+        min-width: 200px;
+      }
+  }
+}

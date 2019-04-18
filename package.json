@@ -1,6 +1,6 @@
 {
   "name": "@element-react/react-dialog",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "react  component dialog",
   "main": "dist/dialog.common.js",
   "module": "dist/dialog.esm.js",
@@ -14,6 +14,7 @@
     "lint": "eslint --ext .js,.jsx src scripts",
     "lint:fix": "eslint --fix --cache --ext .js,.jsx src scripts",
     "lint-staged": "lint-staged",
+    "pub": "npm run build && npm publish --access=public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "jianxcao",

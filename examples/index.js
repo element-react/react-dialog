@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { dialog } from '@element-react/react-dialog';
+import './index.less';
 class Demo extends React.PureComponent {
   constructor(props) {
     super(props);
