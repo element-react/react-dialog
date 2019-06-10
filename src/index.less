@@ -18,7 +18,9 @@
 <div class='m-dialog-layout iOpacityZero'></div>
  */
 
-
+.m-dialog-wrap>div{
+  visibility: hidden;
+}
 
 // wap 弹窗默认样式
 .m-dialog {
@@ -103,53 +105,141 @@
 		}
   }
 
-
+  @ani: m-dialog-ani;
   // 动画控制
   /*
 * CSS3 动画样式
 * 动画过程曲线 http://www.w3school.com.cn/cssref/pr_transition-timing-function.asp
 */
-  &.m-ani-show {
-    // transition: all .3s linear;
-    transition: width, height, transform 3s, 2s liner 3s, 2s;
-  }
-
-  &.m-ani-hide {
-    transition: all .3s linear;
-  }
-
-  &.m-dialog-ani-1 {
+  &.@{ani}-enter-1 {
     opacity: .1;
+    &-active {
+      transition: all .3s linear;
+      opacity: 1;
+    }
+  }
+  &.@{ani}-leave-1 {
+    opacity: 1;
+    &-active {
+      transition: all .3s linear;
+      opacity: .1;
+    }
   }
 
-  &.m-dialog-ani-2 {
+  &.@{ani}-enter-2 {
     opacity: .1;
     transform: scale(0.1);
+    &-active {
+      opacity: 1;
+      transform: scale(1);
+      transition: all .3s linear;
+    }
+  }
+  &.@{ani}-leave-2 {
+    opacity: 1;
+    transform: scale(1);
+    &-active {
+      opacity: .1;
+      transform: scale(0.1);
+      transition: all .3s linear;
+    }
   }
 
-  &.m-dialog-ani-3 {
+  &.@{ani}-enter-3 {
     opacity: .1;
     transform: scale(1.8);
+    transition: all .3s linear;
+    &-active {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  &.@{ani}-leave-3 {
+    opacity: 1;
+    transform: scale(1);
+    transition: all .3s linear;
+    &-active {
+      opacity: .1;
+      transform: scale(1.8);
+    }
   }
 
-  &.m-dialog-ani-4 {
-    opacity: .0;
+  &.@{ani}-enter-4 {
+    opacity: 0;
     transform: perspective(300px) rotateY(90deg);
+    transition: all .3s linear;
+    &-active {
+      opacity: 1;
+      transform: rotateY(0deg);
+    }
+  }
+  &.@{ani}-leave-4 {
+    opacity: 1;
+    transform: rotateY(0deg);
+    transition: all .3s linear;
+    &-active {
+      opacity: 0;
+      transform: perspective(300px) rotateY(90deg);
+    }
   }
 
-  &.m-dialog-ani-5 {
+
+  &.@{ani}-enter-5 {
     opacity: .1;
     transform: scale(.3);
+    transition: all .3s linear;
+    &-active {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  &.@{ani}-leave-5 {
+    opacity: 1;
+    transform: scale(1);
+    transition: all .3s linear;
+    &-active {
+      opacity: .1;
+      transform: scale(.3);
+    }
   }
 
-  &.m-dialog-ani-6 {
+  &.@{ani}-enter-6 {
     opacity: .1;
     transform: matrix(1, 0, 0, 1, 0, 230);
+    transition: all .3s linear;
+    &-active {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  &.@{ani}-leave-6 {
+    opacity: 1;
+    transform: none;
+    transition: all .3s linear;
+    &-active {
+      opacity: .1;
+      transform: matrix(1, 0, 0, 1, 0, 230);
+    }
   }
 
-  &.m-dialog-ani-7 {
+
+  &.@{ani}-enter-7 {
     opacity: .1;
     transform: matrix(1, 0, 0, 1, 0, -230);
+    transition: all .3s linear;
+    &-active {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  &.@{ani}-leave-7 {
+    opacity: 1;
+    transform: none;
+    transition: all .3s linear;
+    &-active {
+      opacity: .1;
+      transform: matrix(1, 0, 0, 1, 0, -230);
+    }
   }
 }
 
@@ -204,3 +294,4 @@
       }
   }
 }
+

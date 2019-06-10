@@ -1,4 +1,5 @@
 import React from 'react';
+import anim from 'css-animation';
 import globalConfig from './globalConfig';
 import PropTypes from 'prop-types';
 import Overlay from './overlay';
@@ -20,49 +21,89 @@ export default class Dialog extends React.PureComponent {
       zeroOpacity: false
     };
   }
+  
   get dialogPos () {
     if (this.dialogRef) {
       const rect = window.getComputedStyle(this.dialogRef);
       return rect.position;
     }
   }
+
+
+  componentDidMount () {
+    console.log(this);
+    this.startTimer();
+    this.initZeroOpacity();
+    // 组件挂载后调用直接重新计算位置 -- 因为首次获取styles的时候组件并没有挂载，所以必须要在组件挂载后强制更新一次
+    this.setMainStyles();
+    this.setPos();
+    setTimeout(() => {
+      this.initAni().then(() => {
+        if (this.props.hidden) {
+          this.props.onHide();
+        } else {
+          this.props.onShow();
+        }
+      });
+    });
+  }
+
   componentDidUpdate(prevProps) {
+    const { hidden } = this.props;
     if (prevProps.width !== this.props.width ||
       prevProps.height !== this.props.height ||
       prevProps.position !== this.props.position ) {
       this.setMainStyles();
       this.setPos();
     }
-    if (prevProps.hidden !== this.props.hidden) {
-      if (this.props.hidden) {
-        this.props.onHide();
-      } else {
+    if (prevProps.hidden !== hidden) {
+      if (!hidden) {
         this.setMainStyles();
         this.setPos();
-        this.props.onShow();
       }
+      this.initAni()
+        .then(() => {
+          if (hidden) {
+            this.props.onHide();
+          } else {
+            this.props.onShow();
+          }
+        });
     }
     // 模态属性改变，或者显示隐藏改变则需要修改zeroOpacity
-    if (prevProps.hidden !== this.props.hidden || prevProps.modal !== this.props.modal ||
+    if (prevProps.hidden !== hidden || prevProps.modal !== this.props.modal ||
       prevProps.zIndex !== this.props.zIndex || prevProps.modalIndex !== this.props.zIndex) {
       this.initZeroOpacity();
     }
   }
-  componentDidMount () {
-    this.startTimer();
-    this.initZeroOpacity();
-    // 组件挂载后调用直接重新计算位置 -- 因为首次获取styles的时候组件并没有挂载，所以必须要在组件挂载后强制更新一次
-    this.setMainStyles();
-    this.setPos();
-    // 为了保证回调能调到，放入下个时间片
-    setTimeout(() => {
-      if (this.props.hidden) {
-        this.props.onHide();
-      } else {
-        this.props.onShow();
+
+  initAni () {
+    return new Promise((resolve, reject) => {
+      const { animate, hidden } = this.props;
+      if (!this.dialogHiddenRef) {
+        return resolve();
       }
+      if (!hidden) {
+        Object.assign(this.dialogHiddenRef.style, this.hiddenStyles);
+      }
+      if (animate) {
+        let cls = '';
+        if (typeof animate === 'string') {
+          cls = `${animate}-${hidden ? 'leave' : 'enter'}`; 
+        } else {
+          cls = `m-dialog-ani-${hidden ? 'leave' : 'enter'}-${animate}`;
+        }
+        return anim(this.dialogRef, cls, () => {
+          if (this.dialogHiddenRef && hidden) {
+            Object.assign(this.dialogHiddenRef.style, this.hiddenStyles);
+          }
+          resolve();
+        });
+      }
+      resolve();
     });
   }
+
   componentWillUnmount () {
     this.endTimer();
     // 下一个时间片段
@@ -274,12 +315,18 @@ export default class Dialog extends React.PureComponent {
   get hiddenStyles () {
     if (this.props.hidden) {
       return {
+        position: 'relative',
         left: '-9999px',
         top: '-9999px',
         visibility: 'hidden'
       };
     }
-    return {};
+    return {
+      position: 'static',
+      left: 'auto',
+      top: 'auto',
+      visibility: 'visible'
+    };
   }
   convertSize (size) {
     let res;
@@ -369,7 +416,7 @@ export default class Dialog extends React.PureComponent {
   }
   render() {
     const className = classnames(this.props.className, this.props.css, this.props.prefixCls);
-    return <div style={this.hiddenStyles}>
+    return <div ref={ele => this.dialogHiddenRef = ele}>
       <div className={className} style={this.dialogstyles}
         ref={ele => this.dialogRef = ele}  id={`dialog${this.props.id}`}
         onClick={this.handleClickDialog}
@@ -446,6 +493,11 @@ Dialog.propTypes = {
   ]),
   modal: PropTypes.bool.isRequired,
   modalIndex: PropTypes.number.isRequired,
+  // 动画效果
+  animate: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   // 关闭方法
   close: PropTypes.func.isRequired,
   // 弹窗关闭后
@@ -466,6 +518,8 @@ Dialog.defaultProps = {
   position: 'c',
   modal: true,
   modalIndex: 0,
+  // 动画效果
+  animate: '',
   onClose: noop,
   onBtnClick: noop,
   onHide: noop,

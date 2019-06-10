@@ -19,6 +19,7 @@ const res = dialog({
   content: <div>welcome<button data-action='test' data-ret='abc'>abc</button></div>,
   button: ['ok', 'cancle'],
   position: 'c',
+  animate: 2,
   // closeIcon: null,
   onClose: function (...arg) {
     console.log(this);
