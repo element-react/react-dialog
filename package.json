@@ -9,7 +9,7 @@
     "clean": "rimraf ./dist",
     "build": "npm run clean && cross-env NODE_ENV=production rollup -c ./scripts/build.js",
     "demo": "npm run clean && rollup -w -m -c ./scripts/rollup.config.demo.js",
-    "start": "npm run clean && rollup -w -m -c ./scripts/build.js",
+    "start": "npm run clean && rollup -w  -m -c ./scripts/build.js",
     "start:dialog": "npm run clean && rollup -w -m -c ./scripts/rollup.config.js",
     "lint": "eslint --ext .js,.jsx src scripts",
     "lint:fix": "eslint --fix --cache --ext .js,.jsx src scripts",

@@ -62,6 +62,12 @@ function getBuild () {
         file: `${distBasePath}/dialog${cur[1] ? '.' + cur[1] : ''}.js`
       });
     }),
+    watch: {
+      clearScreen: false,
+      watch: {
+        exclude: 'node_modules/**'
+      }
+    },
     external: [
       'react',
       'react-dom',

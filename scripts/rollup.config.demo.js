@@ -40,7 +40,12 @@ function genConfig () {
       format: 'iife',
       file: `${basePath}/dist/examples/index.js`
     },
-   
+    watch: {
+      clearScreen: false,
+      watch: {
+        exclude: 'node_modules/**'
+      }
+    },
     plugins: [
       alias({
         [name]: 'src/index.js'
