@@ -3,12 +3,15 @@ export default function (manager, key) {
     manager,
     close (ret) {
       manager.removeCache(key, ret);
+      return this;
     },
     closeAll () {
       manager.removeAll();
+      return this;
     },
     setTop () {
       manager.setTop(key);
+      return this;
     },
     toString () {
       return key;
@@ -28,6 +31,7 @@ export default function (manager, key) {
         listeners[key][one] = listeners[key][one] || [];
         listeners[key][one].push(fun);
       }
+      return this;
     };
   });
 

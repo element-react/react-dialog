@@ -71,6 +71,10 @@ dialog()
 - **timeout** : `0`,	可选, `number`<br>
   是否自动关闭对话框，为0则不自动关闭，单位ms
 
+- **animate** : 动画0-7动画 <br>
+  可以自定义动画
+  传入 字符串时为class名称动画准备的名称
+  如 animate=“test”,则表示test-leave(动画离开), test-enter(动画进入)的class为动画执行准备， test-leave-active(动画离开执行), test-enter-active(动画进入执行)
 
 ### dialog方法返回对象
 

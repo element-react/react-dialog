@@ -31,7 +31,6 @@ export default class Dialog extends React.PureComponent {
 
 
   componentDidMount () {
-    console.log(this);
     this.startTimer();
     this.initZeroOpacity();
     // 组件挂载后调用直接重新计算位置 -- 因为首次获取styles的时候组件并没有挂载，所以必须要在组件挂载后强制更新一次
@@ -56,6 +55,7 @@ export default class Dialog extends React.PureComponent {
       this.setMainStyles();
       this.setPos();
     }
+
     if (prevProps.hidden !== hidden) {
       if (!hidden) {
         this.setMainStyles();

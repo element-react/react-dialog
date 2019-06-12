@@ -85,11 +85,7 @@ export class DialogManager extends React.Component{
     const index = this.state.cache.findIndex(cur => cur.key === key);
     props = {
       ...props,
-      close: this.removeCache.bind(this, key),
-      onClose: this.composeFun(key, 'onClose', props.onClose),
-      onShow: this.composeFun(key, 'onShow', props.onShow),
-      onHide: this.composeFun(key, 'onHide', props.onHide),
-      onBtnClick: this.composeFun(key, 'onBtnClick', props.onBtnClick)
+      close: this.removeCache.bind(this, key)
     };
     // 更新弹窗
     if (index < 0) {
@@ -128,26 +124,32 @@ export class DialogManager extends React.Component{
     const props = this.state.cache[index];
     const onBeforeClosed = this.composeFun(key, 'onBeforeClosed', props.onBeforeClosed);
     if (index > -1) {
+      // 调用onBereClosed，如果任意一个fun返回false，则阻止弹窗关闭
       const res = instance.__closeRet ? onBeforeClosed(instance.__closeRet) : onBeforeClosed();
       if (res && res.some(cur => cur === false)) {
         return;
       }
-      // 调用onBereClosed，如果任意一个fun返回false，则阻止弹窗关闭
-      this.setState(({ cache }) => {
-        cache = cache.slice(0);
-        cache.splice(index, 1);
-        return {
-          cache
-        };
-      },  () => {
-        // 延迟删除api等，因为在回调中可能用到，在删除进行中的时候
-        setTimeout(() => {
-          // 删除api
-          delete this.apis[key];
-          // 删除key
-          delete this.listeners[key];
+      const api = this.apis[key];
+      // 真正开始关闭
+      api.onHide(() => {
+        this.setState(({ cache }) => {
+          cache = cache.slice(0);
+          cache.splice(index, 1);
+          return {
+            cache
+          };
+        },  () => {
+          // 延迟删除api等，因为在回调中可能用到，在删除进行中的时候
+          setTimeout(() => {
+            // 删除api
+            delete this.apis[key];
+            // 删除key
+            delete this.listeners[key];
+          });
         });
       });
+      // 先隐藏他弹窗
+      api.hidden = true;
     }
   }
   removeAll () {
@@ -156,7 +158,17 @@ export class DialogManager extends React.Component{
     });
   }
   renderDialog () {
-    return this.state.cache.map(dialogProps => <Dialog {...dialogProps}/>);
+    return this.state.cache.map(dialogProps => {
+      const key = dialogProps.key;
+      const props = {
+        ...dialogProps,
+        onClose: this.composeFun(key, 'onClose', dialogProps.onClose),
+        onShow: this.composeFun(key, 'onShow', dialogProps.onShow),
+        onHide: this.composeFun(key, 'onHide', dialogProps.onHide),
+        onBtnClick: this.composeFun(key, 'onBtnClick', dialogProps.onBtnClick)
+      };
+      return <Dialog {...props}/>;
+    });
   }
   render () {
     return <div className="m-dialog-wrap">
