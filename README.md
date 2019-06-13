@@ -10,9 +10,9 @@
   // 引入dialog
 	import dialog from '@element-react/react-dialog';
 	var d = dialog({
-		title: "hi",
-		content: 'hi word',
-    button: ["hello", "bye"]
+		  title: "hi",
+		  content: 'hi word',
+    	button: ["hello", "bye"]
 	});
 	//修改弹窗内容是一个 reactElement
 	d.content = "<span>你好，网易</span>";
@@ -119,9 +119,9 @@ dialog()
 
 ``` js
 	var d = dialog({
-		title: "hi",
-    content: "hello 程序猿~",
-    button: ["*hello", "bye"]
+		  title: "hi",
+	    content: "hello 程序猿~",
+	    button: ["*hello", "bye"]
 	});
 	d.onClose(function () {
 		console.log('close');
@@ -146,14 +146,14 @@ dialog组件提供了一些包装接口，用于快速创建一定格式的对�
 //修改dialog全局配置
 dialog.globalConfig({
 	startZIndex: 999,
-  startId: 1,
-  // 默认的button样子
-  btn: ['ok'],
-  // 按钮retId编码方法
-  getBtnRetId: function (i, n) {
-    // n > 1 ? n - i - 1 : 1
-    return n > 1 ? i : 1;
-  }
+	startId: 1,
+	// 默认的button样子
+	btn: ['ok'],
+	// 按钮retId编码方法
+	getBtnRetId: function (i, n) {
+	// n > 1 ? n - i - 1 : 1
+	return n > 1 ? i : 1;
+	}
 });
 ```
 ## 构建功能
@@ -169,3 +169,4 @@ npm run start
 npm run build
 
 ```
+

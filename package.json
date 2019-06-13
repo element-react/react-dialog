@@ -48,6 +48,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
+    "react-markdown": "^4.0.8",
     "rimraf": "^2.6.3",
     "rollup": "^1.7.0",
     "rollup-plugin-alias": "^1.5.1",
