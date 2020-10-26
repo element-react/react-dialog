@@ -117,13 +117,13 @@ export class DialogManager extends React.Component{
   removeCache (key, ret) {
     key = key.replace(dialogIdReg, '$1');
     const index = this.state.cache.findIndex(cur => cur.key === key);
-    const instance = dialogInstanceCache[index];
-    if (ret) {
-      instance.__closeRet = ret;
-    }
-    const props = this.state.cache[index];
-    const onBeforeClosed = this.composeFun(key, 'onBeforeClosed', props.onBeforeClosed);
     if (index > -1) {
+      const instance = dialogInstanceCache[index];
+      if (ret) {
+        instance.__closeRet = ret;
+      }
+      const props = this.state.cache[index];
+      const onBeforeClosed = this.composeFun(key, 'onBeforeClosed', props.onBeforeClosed);
       // 调用onBereClosed，如果任意一个fun返回false，则阻止弹窗关闭
       const res = instance.__closeRet ? onBeforeClosed(instance.__closeRet) : onBeforeClosed();
       if (res && res.some(cur => cur === false)) {
